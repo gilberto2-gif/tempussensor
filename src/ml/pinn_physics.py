@@ -233,13 +233,13 @@ def theoretical_sensitivity(
 
     # Frequency-band dependent (higher freq → more noise)
     return {
-        "0.5-10Hz": sens_pt * 0.8,
-        "10-50Hz": sens_pt * 1.0,
-        "50-100Hz": sens_pt * 1.5,
-        "overall_pT": sens_pt,
-        "estimated_order_param": est_order_param,
-        "T2_eff_us": t2_eff * 1e6,
-        "decoherence_rate_hz": gamma_dec,
+        "0.5-10Hz": float(sens_pt * 0.8),
+        "10-50Hz": float(sens_pt * 1.0),
+        "50-100Hz": float(sens_pt * 1.5),
+        "overall_pT": float(sens_pt),
+        "estimated_order_param": float(est_order_param),
+        "T2_eff_us": float(t2_eff * 1e6),
+        "decoherence_rate_hz": float(gamma_dec),
     }
 
 
@@ -281,13 +281,13 @@ def compare_to_clinical(sensitivity_pt_per_band: dict) -> dict:
 
         current_sens = min(relevant_sens) if relevant_sens else sensitivity_pt_per_band.get("overall_pT", 999)
 
-        gap_factor = current_sens / target_pt if target_pt > 0 else float("inf")
+        gap_factor = float(current_sens / target_pt) if target_pt > 0 else float("inf")
         results[target_name] = {
-            "target_pT": target_pt,
-            "current_pT": current_sens,
+            "target_pT": float(target_pt),
+            "current_pT": float(current_sens),
             "gap_factor": gap_factor,
-            "meets_target": gap_factor <= 1.0,
-            "orders_of_magnitude_gap": np.log10(max(gap_factor, 1e-10)),
+            "meets_target": bool(gap_factor <= 1.0),
+            "orders_of_magnitude_gap": float(np.log10(max(gap_factor, 1e-10))),
         }
 
     return results

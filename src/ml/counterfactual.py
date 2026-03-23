@@ -68,11 +68,11 @@ def parameter_sweep_1d(
         params = {**base, mapped_param: float(val)}
         sens = theoretical_sensitivity(material_type=material_type, **params)
 
-        results["sensitivity_05_10"].append(sens["0.5-10Hz"])
-        results["sensitivity_10_50"].append(sens["10-50Hz"])
-        results["sensitivity_50_100"].append(sens["50-100Hz"])
-        results["order_param"].append(sens["estimated_order_param"])
-        results["t2_eff_us"].append(sens["T2_eff_us"])
+        results["sensitivity_05_10"].append(float(sens["0.5-10Hz"]))
+        results["sensitivity_10_50"].append(float(sens["10-50Hz"]))
+        results["sensitivity_50_100"].append(float(sens["50-100Hz"]))
+        results["order_param"].append(float(sens["estimated_order_param"]))
+        results["t2_eff_us"].append(float(sens["T2_eff_us"]))
 
     # Detect optimal point
     best_idx = int(np.argmin(results["sensitivity_10_50"]))
@@ -164,14 +164,14 @@ def pareto_frontier(
     points = []
 
     for _ in range(n_samples):
-        mat = rng.choice(materials)
+        mat = str(rng.choice(materials))
         n_spins = int(rng.integers(5, 100))
-        temp_k = rng.uniform(0.01, 400.0)
-        power_w = rng.uniform(0.001, 1.0)
-        freq_hz = rng.uniform(1.0, 100.0)
+        temp_k = float(rng.uniform(0.01, 400.0))
+        power_w = float(rng.uniform(0.001, 1.0))
+        freq_hz = float(rng.uniform(1.0, 100.0))
 
         sens = theoretical_sensitivity(mat, n_spins, temp_k, power_w, freq_hz)
-        cost = _estimate_cost(mat, n_spins, temp_k)
+        cost = float(_estimate_cost(mat, n_spins, temp_k))
 
         points.append({
             "material": mat,
@@ -179,9 +179,8 @@ def pareto_frontier(
             "temperatura_k": temp_k,
             "potencia_w": power_w,
             "frecuencia_hz": freq_hz,
-            "sensitivity_pT": sens["10-50Hz"],
+            "sensitivity_pT": float(sens["10-50Hz"]),
             "cost_usd": cost,
-            "clinical_comparison": compare_to_clinical(sens),
         })
 
     # Find Pareto-optimal points
