@@ -1,0 +1,22 @@
+databases:
+  - name: tempussensor-db
+    plan: free
+    databaseName: tempussensor
+    user: tempus
+
+services:
+  - type: web
+    name: tempussensor-api
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn src.api.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.11"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: DATABASE_URL
+        fromDatabase:
+          name: tempussensor-db
+          property: connectionString
